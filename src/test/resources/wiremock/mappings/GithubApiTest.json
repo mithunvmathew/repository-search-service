@@ -1,0 +1,29 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "url": "/search/repositories?sort=stars&per_page=2&q=language:JavaScript"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "GithubSearchWith2repo.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/search/repositories?sort=stars&per_page=10&q=language:Java"
+      },
+      "response": {
+        "status": 503,
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    }
+  ]
+}

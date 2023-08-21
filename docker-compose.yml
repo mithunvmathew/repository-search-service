@@ -1,0 +1,10 @@
+version: '3.1'
+services:
+  up42-server:
+    container_name: repository-search-server
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: repository-search-server:latest
+    ports:
+      - 8085:8085
