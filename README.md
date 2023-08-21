@@ -12,10 +12,9 @@ Docker
 From the project root location, run the below commands  
 ./gradlew clean build
 
-###### Run
+##### Run
 From the project root location, run the below commands  
-docker-compose up  
-
+docker-compose up
 OR   
 ./gradlew bootRun
 

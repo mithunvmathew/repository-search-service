@@ -3,6 +3,7 @@ package com.mvm.repositorysearchservice.controller;
 import com.mvm.repositorysearchservice.exceptions.GitHubApiClientException;
 import com.mvm.repositorysearchservice.exceptions.SearchTextMissingException;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -19,7 +20,9 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler({SearchTextMissingException.class,
             MethodArgumentTypeMismatchException.class,
-            MethodArgumentNotValidException.class})
+            MethodArgumentNotValidException.class,
+            ConstraintViolationException.class,
+    })
     public ResponseEntity<Error> handleException(Exception exception) {
         return new ResponseEntity<>(new Error(
                 "BadRequestException", exception.getMessage()), HttpStatus.BAD_REQUEST);

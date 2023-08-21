@@ -25,7 +25,7 @@ class RepositorySearchServiceApplicationTests {
     @Autowired
     TestRestTemplate testRestTemplate;
 
-    private String BASIC_SERVER_PATH = "/search/repositories";
+    private final String BASIC_SERVER_PATH = "/search/repositories";
     static WireMockServer mockServer;
 
     ObjectMapper objectMapper = new ObjectMapper();
@@ -47,11 +47,9 @@ class RepositorySearchServiceApplicationTests {
     void getRepositoriesFromSearchWithRequestedTest() throws IOException {
         //Given
         String url = BASIC_SERVER_PATH + "?resultCount=2&programmingLanguage=JavaScript";
-        HttpHeaders header = new HttpHeaders();
-        HttpEntity httpEntity = new HttpEntity(header);
 
         //When
-        ResponseEntity response = testRestTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+        ResponseEntity<String> response = testRestTemplate.exchange(url, HttpMethod.GET, getHttpEntity(), String.class);
 
         //Then
         List<SearchResponse> result = objectMapper.readValue(response.getBody().toString(), new TypeReference<>() {
@@ -71,19 +69,50 @@ class RepositorySearchServiceApplicationTests {
 
         //Given
         String url = BASIC_SERVER_PATH + "?resultCount=10&programmingLanguage=Java";
-        HttpHeaders header = new HttpHeaders();
-        HttpEntity httpEntity = new HttpEntity(header);
 
         //When
-        ResponseEntity response = testRestTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+        ResponseEntity<String> response = testRestTemplate.exchange(url, HttpMethod.GET, getHttpEntity(), String.class);
 
+        //Then
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
 
+    }
+
+    @Test
+    @DisplayName("Given Search request parameters without search text When calling the service Then service will return Error response")
+    void getExceptionWhenSearchTextMissingTest() throws IOException {
+
+        //Given
+        String url = BASIC_SERVER_PATH + "?resultCount=10";
+
+        //When
+        ResponseEntity<String> response = testRestTemplate.exchange(url, HttpMethod.GET, getHttpEntity(), String.class);
+
+        //Then
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Given Search request parameters with resultCount exceeds limit When calling the service Then service will return Error response")
+    void getExceptionWhenResultCountExceedsLimitTest() throws IOException {
+
+        //Given
+        String url = BASIC_SERVER_PATH + "?resultCount=500";
+
+        //When
+        ResponseEntity<String> response = testRestTemplate.exchange(url, HttpMethod.GET, getHttpEntity(), String.class);
+
+        //Then
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @AfterAll
     static void tearDown() {
         mockServer.shutdown();
+    }
+    private  HttpEntity getHttpEntity() {
+        HttpHeaders header = new HttpHeaders();
+        return new HttpEntity(header);
     }
 
 
