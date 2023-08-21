@@ -49,7 +49,6 @@ public class GithubApiClientImpl implements GithubApiClient {
                 .queryParamIfPresent(GITHUB_SEARCH_KEY, searchRequest.programmingLanguage().isPresent() ? Optional.of(
                         GITHUB_SEARCH_LANGUAGE_KEY + searchRequest.programmingLanguage().get()) : Optional.empty()).toUriString();
         log.debug(uri);
-        System.out.println(uri);
         try {
             return searchResponseMapper.map(Objects.requireNonNull
                     (restTemplate.getForObject(uri, GithubSearchResponse.class)).items());
