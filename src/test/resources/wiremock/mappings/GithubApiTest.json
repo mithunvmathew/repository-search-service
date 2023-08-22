@@ -24,6 +24,34 @@
           "Content-Type": "application/json"
         }
       }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/search/repositories?q=created:%3E2900-01-01&sort=stars&per_page=5"
+      },
+      "response": {
+        "status": 200,
+        "bodyFileName": "GithubApiEmptyResponse.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "url": "/search/repositories?sort=stars&per_page=7&q=language:aaa"
+      },
+      "response": {
+        "status": 500,
+        "bodyFileName": "GithubApiValidationErrorMessage.json",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      }
     }
+
+
   ]
 }

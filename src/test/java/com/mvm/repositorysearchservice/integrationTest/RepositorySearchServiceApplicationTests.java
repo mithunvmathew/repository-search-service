@@ -106,6 +106,36 @@ class RepositorySearchServiceApplicationTests {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
+    @Test
+    @DisplayName("Given Search request parameters When calling the service with git hub api but no data available Then service will return Empty list")
+    void getEmptyListWhenCreatedFromIsFutureDate() throws IOException {
+
+        //Given
+        String url = BASIC_SERVER_PATH + "?resultCount=5&createdFrom=2900-01-01";
+
+        //When
+        ResponseEntity<String> response = testRestTemplate.exchange(url, HttpMethod.GET, getHttpEntity(), String.class);
+
+        //Then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("Given Search request with invalid parameters When calling the service with git hub api  Then service will return Error response")
+    void getErrorWhenProgrammingLanguageInInvalid() throws IOException {
+
+        //Given
+        String url = BASIC_SERVER_PATH + "?resultCount=7&programmingLanguage=aaa";
+
+        //When
+        ResponseEntity<String> response = testRestTemplate.exchange(url, HttpMethod.GET, getHttpEntity(), String.class);
+
+        //Then
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+
+
     @AfterAll
     static void tearDown() {
         mockServer.shutdown();

@@ -11,8 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -39,7 +45,9 @@ public class GithubApiClientImpl implements GithubApiClient {
 
     @Override
     @CircuitBreaker(name = "githubApiCircuitBreaker")
-    public List<SearchResponse> getSearchResult(SearchRequest searchRequest) {
+    public List<SearchResponse> getSearchResult(SearchRequest searchRequest)  {
+
+
 
         String uri = UriComponentsBuilder.fromUriString(baselUrl)
                 .queryParamIfPresent(GITHUB_SEARCH_KEY, searchRequest.createdDate().isPresent() ? Optional.of(
@@ -47,8 +55,9 @@ public class GithubApiClientImpl implements GithubApiClient {
                 .queryParam(GITHUB_SEARCH_SORT_KEY, GITHUB_SEARCH_SORT_VALUE)
                 .queryParam(GITHUB_SEARCH_PAGE_KEY, searchRequest.resultCount())
                 .queryParamIfPresent(GITHUB_SEARCH_KEY, searchRequest.programmingLanguage().isPresent() ? Optional.of(
-                        GITHUB_SEARCH_LANGUAGE_KEY + searchRequest.programmingLanguage().get()) : Optional.empty()).toUriString();
-        log.debug(uri);
+                        GITHUB_SEARCH_LANGUAGE_KEY + searchRequest.programmingLanguage().get()) : Optional.empty()).toUriString()
+                .replace("%3E", ">");
+        log.info(uri);
         try {
             return searchResponseMapper.map(Objects.requireNonNull
                     (restTemplate.getForObject(uri, GithubSearchResponse.class)).items());
